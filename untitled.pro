@@ -16,7 +16,8 @@ SOURCES += main.cpp \
     fileowner.cpp \
     client.cpp \
     filesystem.cpp \
-    tcpconn.cpp
+    tcpconn.cpp \
+    logger.cpp
 
 HEADERS += \
     mytcpsocket.h \
@@ -25,7 +26,8 @@ HEADERS += \
     fileowner.h \
     client.h \
     filesystem.h \
-    tcpconn.h
+    tcpconn.h \
+    logger.h
 LIBS += \
        -lboost_system\
        -lboost_filesystem\
