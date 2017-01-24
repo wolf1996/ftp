@@ -3,18 +3,22 @@
 
 #include <boost/filesystem/path.hpp>
 #include <fstream>
+#include <mutex>
+
 
 class Logger
 {
   public:
     static Logger& Instance();
-    static void InitLog(std::string logpath);
-    static void InitLog();
+    static int InitLog(std::string logpath);
+    static int InitLog();
     void Debug(const std::string&);
     void Log(const std::string& );
   private:
+    static std::mutex locker;
     static boost::filesystem::path logfile;
     static std::ofstream filedescr;
+    static bool inited;
     Logger();
     ~Logger();
     Logger(Logger const&); // реализация не нужна
