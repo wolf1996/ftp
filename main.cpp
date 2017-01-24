@@ -5,11 +5,16 @@
 #include <myserversocket.h>
 #include <algorithm>
 #include <vector>
+
 #include "client.h"
+#include "logger.h"
 
 int main(int argc, char *argv[])
 {
     boost::filesystem::path pt("/home/ksg/disk_d/labs_2016_4k/ramus");
+    Logger::InitLog(std::string("mylogfile"));
+    Logger& logs = Logger::Instance();
+    logs.Debug("WorkS!");
     MyServerSocket sock;
     sock.mbind(12345);
     sock.mlisten();
