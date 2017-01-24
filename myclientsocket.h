@@ -1,9 +1,15 @@
 #ifndef MYCLIENTSOCKET_H
 #define MYCLIENTSOCKET_H
 
+#ifdef __linux__
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
+#elif _WIN32
+#include <inet_pton.h>
+#endif
+
+
 #include <thread>
 #include <vector>
 #include "mytcpsocket.h"

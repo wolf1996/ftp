@@ -1,20 +1,29 @@
 #ifndef MYSERVERSOCKET_H
 #define MYSERVERSOCKET_H
 
+#ifdef __linux__
 #include <sys/ioctl.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#elif _WIN32
+#include <inet_pton.h>
+#endif
+
 #include <string>
 #include <vector>
 #include <memory>
 #include <iostream>
 #include <unistd.h>
 #include <fcntl.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
+
 
 #include "mytcpsocket.h"
 
 class MyServerSocket : public MyTCPSocket
 {
+#if _WIN32
+    WSADATA wsadata;
+#endif
     MyTCPSocket sock;
 public:
     MyServerSocket();

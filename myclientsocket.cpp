@@ -11,6 +11,7 @@ MyClientSocket::~MyClientSocket()
 
 }
 
+
  void MyClientSocket::mconnect(char ip[], int port) {
      initSocket();
      struct sockaddr_in addr;
@@ -18,7 +19,12 @@ MyClientSocket::~MyClientSocket()
      addr.sin_family = AF_INET;
      addr.sin_port = htons(port);
      addr.sin_addr.s_addr = htonl(INADDR_ANY);
-     if(inet_aton(ip, &addr.sin_addr) == 0) {
+#ifdef __linux__
+     if(inet_aton(ip, &addr.sin_addr) == 0)
+#elif _WIN32
+     if(inet_pton(PF_INET,ip,&addr.sin_addr) == 0)
+#endif
+     {
          throw std::runtime_error(std::string("inet aton error"));
      }
      int rc = connect(sDescr, (struct sockaddr *)(&addr), sizeof(struct sockaddr_in));
@@ -53,7 +59,7 @@ MyClientSocket::~MyClientSocket()
          for(unsigned int j = 0; (j<BUFSIZE) && (j<size); j++) {
              buf[j] = msg[i+j];
          }
-         if(send(sDescr,buf,BUFSIZE, 0) == -1) {
+         if(send(sDescr,buf,BUFSIZE, 0) == -1) { ///????
              throw std::runtime_error(std::string("send_error"));
          }
      }

@@ -5,7 +5,14 @@
 
 MyServerSocket::MyServerSocket()
 {
+#if _WIN32
 
+    auto rc = WSAStartup (MAKEWORD(1, 1), &wsadata);
+    if(rc != 0)
+    {
+      throw std::runtime_error( "WSAStartup ");
+    }
+#endif
 }
 
 void MyServerSocket::mbind(int port)
@@ -14,10 +21,21 @@ void MyServerSocket::mbind(int port)
     struct sockaddr_in addr;
     memset(&addr,0,sizeof(struct sockaddr_in));
     int on = 1;
-    if(setsockopt(sDescr,SOL_SOCKET,SO_REUSEADDR,(char*)(&on),sizeof(on)) < 0) {
+#ifdef __linux__
+    if(setsockopt(sDescr,SOL_SOCKET,SO_REUSEADDR,(char*)(&on),sizeof(on)) < 0)
+#elif _WIN32
+    if(setsockopt(sDescr,SOL_SOCKET,SO_REUSEADDR,(char*)(&on),sizeof(on)) != 0)
+#endif
+    {
+        std::cout<<WSAGetLastError()<<std::endl;
         throw std::runtime_error("set rcvtimeout: " + std::string(strerror(errno)));
     }
-    if(ioctl(sDescr, FIONBIO, (char*)&on)) {
+#ifdef __linux__
+    if(ioctl(sDescr, FIONBIO, (char*)&on))
+#elif _WIN32
+    if(ioctlsocket(sDescr, FIONBIO, (long unsigned*)&on))
+#endif
+    {
         throw std::runtime_error(std::string("setsockopt failed"));
     }
     addr.sin_family      = AF_INET;
@@ -45,7 +63,7 @@ void MyServerSocket::mlisten()
 std::shared_ptr<MyServerSocket> MyServerSocket::maccept() {
     struct sockaddr_in client;
     memset(&client, 0, sizeof(client));
-    socklen_t cli_len = sizeof(client);
+    int cli_len = sizeof(client);
     int cli_sd = accept(sDescr, (struct sockaddr*)& client, &cli_len);
     if (-1 == cli_sd)
         return std::shared_ptr<MyServerSocket>();
@@ -105,7 +123,12 @@ void MyServerSocket::msend(const std::vector<char> & msg) {
      addr.sin_family = AF_INET;
      addr.sin_port = htons(port);
      addr.sin_addr.s_addr = htonl(INADDR_ANY);
-     if(inet_aton(ip, &addr.sin_addr) == 0) {
+#ifdef __linux__
+     if(inet_aton(ip, &addr.sin_addr) == 0)
+#elif _WIN32
+     if(inet_pton(PF_INET,ip,&addr.sin_addr) == 0)
+#endif
+     {
          throw std::runtime_error(std::string("inet aton error"));
      }
      int rc = connect(sDescr, (struct sockaddr *)(&addr), sizeof(struct sockaddr_in));

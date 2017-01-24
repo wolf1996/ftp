@@ -5,17 +5,23 @@
 #include <myserversocket.h>
 #include <algorithm>
 #include <vector>
+
 #include "client.h"
+#include "logger.h"
 
 int main(int argc, char *argv[])
 {
-    boost::filesystem::path pt("/home/ksg/disk_d/labs_2016_4k/ramus");
+    boost::filesystem::path pt("C:\ftp\test");
+    Logger::InitLog(std::string("mylogfile"));
+    Logger& logs = Logger::Instance();
+    logs.Debug("WorkS!");
     MyServerSocket sock;
     sock.mbind(12345);
     sock.mlisten();
     std::vector<Client*> clients;
         while (1) {
             usleep(100);
+
             while(std::shared_ptr<MyServerSocket> client = sock.maccept()) {
                 client->setNonBlocked(1);
                 Client* buf = new Client(client,pt);
