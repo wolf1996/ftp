@@ -63,7 +63,11 @@ void MyServerSocket::mlisten()
 std::shared_ptr<MyServerSocket> MyServerSocket::maccept() {
     struct sockaddr_in client;
     memset(&client, 0, sizeof(client));
+#if _WIN32
     int cli_len = sizeof(client);
+#elif __linux__
+    socklen_t cli_len = sizeof(client);
+#endif
     int cli_sd = accept(sDescr, (struct sockaddr*)& client, &cli_len);
     if (-1 == cli_sd)
         return std::shared_ptr<MyServerSocket>();
