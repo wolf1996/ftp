@@ -11,7 +11,11 @@
 
 int main(int argc, char *argv[])
 {
+#if _WIN32
     boost::filesystem::path pt("C:\ftp\test");
+#elif __linux__
+    boost::filesystem::path pt("/home/ksg/disk_d/labs_2016_4k/ramus");
+#endif
     Logger::InitLog(std::string("mylogfile"));
     Logger& logs = Logger::Instance();
     logs.Debug("WorkS!");

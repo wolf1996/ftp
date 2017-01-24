@@ -27,10 +27,16 @@ HEADERS += \
     client.h \
     filesystem.h \
     tcpconn.h \
+<<<<<<< HEAD
     logger.h \
     inet_pton.h
 unix {
 LIBS +=-lboost_system\
+=======
+    logger.h
+LIBS += \
+       -lboost_system\
+>>>>>>> origin/master
        -lboost_filesystem\
 }
 
