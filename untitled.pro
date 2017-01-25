@@ -17,7 +17,8 @@ SOURCES += main.cpp \
     client.cpp \
     filesystem.cpp \
     tcpconn.cpp \
-    logger.cpp
+    logger.cpp \
+    parser_arg.cpp
 
 HEADERS += \
     mytcpsocket.h \
@@ -28,7 +29,8 @@ HEADERS += \
     filesystem.h \
     tcpconn.h \
     logger.h \
-    inet_pton.h
+    win_include.h \
+    parser_arg.h
 unix {
 LIBS +=-lboost_system\
 

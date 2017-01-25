@@ -8,19 +8,18 @@
 
 #include "client.h"
 #include "logger.h"
+#include "parser_arg.h"
 
 int main(int argc, char *argv[])
 {
-#if _WIN32
-    boost::filesystem::path pt("C:\ftp\test");
-#elif __linux__
-    boost::filesystem::path pt("/home/ksg/disk_d/labs_2016_4k/ramus");
-#endif
+    parser_arg flags(argc,argv);
+    boost::filesystem::path pt(flags.get_work_dir());
+
     Logger::InitLog(std::string("mylogfile"));
     Logger& logs = Logger::Instance();
     logs.Log("Starting server");
     MyServerSocket sock;
-    sock.mbind(12345);
+    sock.mbind(flags.get_port());
     sock.mlisten();
     std::vector<Client*> clients;
         while (1) {

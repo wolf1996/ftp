@@ -6,7 +6,7 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #elif _WIN32
-#include <inet_pton.h>
+#include <win_include.h>
 #endif
 
 

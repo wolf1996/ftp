@@ -1,5 +1,5 @@
-#ifndef INET_PTON_H
-#define INET_PTON_H
+#ifndef WIN_INCLUDE_H
+#define WIN_INCLUDE_H
 
 #include <SDKDDKVer.h>
 #if(_WIN32_WINNT < _WIN32_WINNT_WIN7)
@@ -38,4 +38,4 @@
 //  return 0;
 //}
 
-#endif // INET_PTON_H
+#endif // WIN_INCLUDE_H
