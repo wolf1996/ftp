@@ -18,6 +18,7 @@
 #include "myserversocket.h"
 #include "filesystem.h"
 #include "tcpconn.h"
+#include "logger.h"
 
 class Client
 {

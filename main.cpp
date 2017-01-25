@@ -18,7 +18,7 @@ int main(int argc, char *argv[])
 #endif
     Logger::InitLog(std::string("mylogfile"));
     Logger& logs = Logger::Instance();
-    logs.Debug("WorkS!");
+    logs.Log("Starting server");
     MyServerSocket sock;
     sock.mbind(12345);
     sock.mlisten();

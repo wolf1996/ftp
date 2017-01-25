@@ -27,7 +27,9 @@ void MyServerSocket::mbind(int port)
     if(setsockopt(sDescr,SOL_SOCKET,SO_REUSEADDR,(char*)(&on),sizeof(on)) != 0)
 #endif
     {
+#ifdef _WIN32
         std::cout<<WSAGetLastError()<<std::endl;
+#endif
         throw std::runtime_error("set rcvtimeout: " + std::string(strerror(errno)));
     }
 #ifdef __linux__

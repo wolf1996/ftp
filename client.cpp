@@ -16,13 +16,17 @@ Client::Client(std::shared_ptr<MyServerSocket> _sock,
 
 void Client::finish_translation(){
     int res = fut.get();
+    Logger& logs = Logger::Instance();
+    logs.Log("translation finished\n");
     deleteDatasock();
     if(res){
          char msg[]= "501 send failed \r\n";
+         logs.Log("translation failed\n");
          std::vector<char> cmd(msg,msg + sizeof(msg));
          (*sock).msend(cmd);
     } else {
         char msg[]= "226 send,ok\r\n";
+        logs.Log("translation ok\n");
         std::vector<char> cmd(msg,msg + sizeof(msg));
         (*sock).msend(cmd);
     }
@@ -279,16 +283,22 @@ void Client::syst(std::string& strres){
 
 void Client::accept(){
     char msg[] = "220\r\n";
+    Logger& logs = Logger::Instance();
+    logs.Log("new client accepted");
     std::vector<char> cmd(msg,msg+sizeof(msg));
     (*sock).msend(cmd);
 }
 
 void Client::createDatasock(){
     deleteDatasock();
+    Logger& logs = Logger::Instance();
+    logs.Debug("datasock created \n");
     datasock = std::shared_ptr<MyServerSocket> (new MyServerSocket());
 }
 
 void Client::deleteDatasock(){
+    Logger& logs = Logger::Instance();
+    logs.Debug("datasock reseted \n ");
     if (datasock){
        datasock.reset();
     }
@@ -307,6 +317,8 @@ void Client::execCmd() {
     std::vector<char> res = (*sock).mrecv();
     std::string strres(res.begin(), res.end());
     std::cout << strres;
+    Logger& logs = Logger::Instance();
+    logs.Log(strres);
     std::regex user("(USER )(.*)\\r\\n");
     if (std::regex_match(strres,user)) {
         this->user(strres);
