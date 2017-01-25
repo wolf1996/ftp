@@ -6,7 +6,6 @@
 MyServerSocket::MyServerSocket()
 {
 #if _WIN32
-
     auto rc = WSAStartup (MAKEWORD(1, 1), &wsadata);
     if(rc != 0)
     {
@@ -74,7 +73,7 @@ std::shared_ptr<MyServerSocket> MyServerSocket::maccept() {
     if (-1 == cli_sd)
         return std::shared_ptr<MyServerSocket>();
     std::cerr << "new client: " << cli_sd << ", from: "<<client.sin_addr.s_addr << std::endl;
-    return std::make_shared<MyServerSocket>(cli_sd);
+    return std::shared_ptr<MyServerSocket>(new MyServerSocket(cli_sd));
 }
 
 std::vector<char> MyServerSocket::mrecv()
@@ -116,7 +115,12 @@ void MyServerSocket::msend(const std::vector<char> & msg) {
         for(unsigned int j = 0; (j<BUFSIZE) && (j<size); j++) {
             buf[j] = msg[i+j];
         }
-        if(send(sDescr,buf,((size - i) > BUFSIZE)?BUFSIZE:(size-i), 0) == -1) {
+#if __linux__
+        if(send(sDescr,buf,((size - i) > BUFSIZE)?BUFSIZE:(size-i), 0) == -1)
+#elif _WIN32
+        if(!send(sDescr,buf,strlen(buf),0))
+#endif
+        {
             throw std::runtime_error(std::string("send_error"+std::string(strerror(errno))));
         }
     }

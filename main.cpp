@@ -25,8 +25,8 @@ int main(int argc, char *argv[])
     std::vector<Client*> clients;
         while (1) {
             usleep(100);
-
-            while(std::shared_ptr<MyServerSocket> client = sock.maccept()) {
+            while(std::shared_ptr<MyServerSocket> client = sock.maccept())
+            {
                 client->setNonBlocked(1);
                 Client* buf = new Client(client,pt);
                 clients.push_back(buf);

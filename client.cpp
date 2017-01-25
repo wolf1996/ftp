@@ -17,7 +17,7 @@ Client::Client(std::shared_ptr<MyServerSocket> _sock,
 void Client::finish_translation(){
     int res = fut.get();
     Logger& logs = Logger::Instance();
-    logs.Log("translation finished\n");
+    logs.Log("translation finished \n");
     deleteDatasock();
     if(res){
          char msg[]= "501 send failed \r\n";
